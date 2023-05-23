@@ -1,0 +1,27 @@
+[
+    {
+      "id": 1,
+      "title": "Max Drewitz",
+      "participants": [
+        {"id": 1, "name": "Marko Djurovac", "profilePicture": "notyet", "uname": "djurovacm", "accessToken": "sst544789"},
+        {"id": 2, "name": "Max Drewitz", "profilePicture": "notyet", "uname": "drewitzm", "accessTokan": "sst348896"}
+      ],
+      "messages": [
+        {"id": 1, "senderId": 1, "sent": true, "text": "Hey, unsere App ist so geil, WhatsApp kann einpacken!", "timestamp": "2023-01-01T00:00:00Z"},
+        {"id": 2, "senderId": 2, "sent": false, "text": "Ja locker easy, Ehre genimmt Mark Zuckerberg", "timestamp": "2023-01-01T00:01:00Z"}
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Marc Göring",
+      "participants": [
+        {"id": 1, "name": "Marko Djurovac", "profilePicture": "notyet", "uname": "djurovacm", "accessToken": "sst544789"},
+        {"id": 3, "name": "Marc Göring", "profilePicture": "notyet", "uname": "goeringm", "accessTokan": "sst564778"}
+      ],
+      "messages": [
+        {"id": 1, "senderId": 1, "sent": true, "text": "Hi", "timestamp": "2023-01-01T00:00:00Z"},
+        {"id": 2, "senderId": 3, "sent": false, "text": "Wo denn?", "timestamp": "2023-01-01T00:01:00Z"},
+        {"id": 3, "senderId": 1, "sent": true, "text": "Absolut nicht lustig", "timestamp": "2023-01-01T00:00:00Z"}
+      ]
+    }
+]

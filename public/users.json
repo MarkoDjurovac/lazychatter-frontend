@@ -1,0 +1,24 @@
+[
+    {
+        "id": 1,
+        "name": "Marko Djurovac",
+        "profilePicture": "default-pp",
+        "uname": "djurovacm",
+        "accessToken": "1234"
+    },
+    {
+        "id": 2,
+        "name": "Max Drewitz",
+        "profilePicture": "default-pp",
+        "uname": "drewitzm",
+        "accessToken": "sst348896"
+             
+    },
+    {
+        "id": 3,
+        "name": "Marc Göring",
+        "profilePicture": "default-pp",
+        "uname": "goeringm",
+        "accessToken": "sst564778"
+    }
+]
