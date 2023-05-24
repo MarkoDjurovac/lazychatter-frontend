@@ -8,7 +8,7 @@ export interface IUser {
 
 export interface IMessage {
     id: number;
-    sender: IUser;
+    senderId: number;
     recipient: IUser;
     sent: boolean;
     text: string;

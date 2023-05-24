@@ -61,7 +61,7 @@
   <Profile {user}/>
   <div class="options">
     <button on:click={handleToggleConversations} id="convo-btn">Show Conversations</button>
-    <button on:click={handleToggleTheme} id="theme-btn">Dark Mode</button>
-    <button on:click={handleShowSettingsDialog} id="settings-btn">Settings</button>
+    <button on:click={handleToggleTheme} id="theme-btn" disabled>Dark Mode</button>
+    <button on:click={handleShowSettingsDialog} id="settings-btn" disabled>Settings</button>
   </div>
 </div>

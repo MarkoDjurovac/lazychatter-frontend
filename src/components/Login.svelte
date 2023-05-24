@@ -20,7 +20,40 @@
       }
     }
   </script>
-  
+
+<style>
+  div.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f1f1f1;
+    height: 100vh;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  img {
+    margin-top: 1rem;
+    width: 100px;
+    height: 100px;
+  }
+</style>
+
+<div class="login">
+  <img src="logo.png" alt="lazyChatter logo" />
+  <p>
+    <b>
+      Welcome to lazyChatter (pre-α)!
+    </b>
+  </p>
   <form on:submit={login}>
     <label for="username">Username:</label>
     <input id="username" bind:value={username} type="text" required />
@@ -28,3 +61,4 @@
     <input id="accessToken" bind:value={accessToken} type="password" required />
     <button type="submit">Log in</button>
   </form>
+</div>

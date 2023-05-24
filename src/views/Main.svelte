@@ -41,25 +41,29 @@
 <style>
   .main-view {
     display: flex;
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
   }
 
   .sidebar {
     width: 20%;
     background-color: #f0f0f0;
     padding: 1rem;
+    border-right: 1px solid #2b2b2b;
   }
 
   .conversation-list {
     width: 30%;
     background-color: #e0e0e0;
     padding: 1rem;
+    border-right: 1px solid #2b2b2b;
   }
 
   .conversation {
     width: 50%;
     background-color: #d0d0d0;
     padding: 1rem;
+    border-right: 1px solid #2b2b2b;
   }
 </style>
 
@@ -76,7 +80,7 @@
   {/if}
   {#if selectedConversation}
     <div class="conversation">
-      <Conversation {selectedConversation}/>
+      <Conversation {selectedConversation} {user}/>
     </div>
   {/if}
 </div>

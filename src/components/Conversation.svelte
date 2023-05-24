@@ -1,17 +1,26 @@
 <script lang="ts">
   import type { IConversation, IUser, IMessage } from '../types';
+  import { sendMessage, sendAiMessage } from '../mock/messaging';
   import Message from './Message.svelte';
 
   export let selectedConversation: IConversation;
+  export let user: IUser;
 
   let message = '';
 
-  function handleSendMessage() {
-    console.log('Send message: ' + message);
+  async function handleSendMessage() {
+    if (message) {
+      selectedConversation = await sendMessage(user, selectedConversation, message);
+    }
+  }
+
+  async function handleSendAiMessage() {
+    selectedConversation = await sendAiMessage(user, selectedConversation);
   }
 
   let isHoldingSend = false;
   let showSendingOptions = false;
+  let showAiPrompt = false;
 
   function handleMouseDown() {
     console.log('Mouse down');
@@ -33,25 +42,30 @@
   function handleCloseConversation() {
     selectedConversation = null;
   }
+
+  function handleAiMessage(){
+    showAiPrompt = true;
+  }
 </script>
 
 <style>
+  h2 {
+    border-bottom: 1px solid #4b4a4a;
+  }
+  
   .sending-options {
     position: absolute;
-    bottom: 50px;
-    left: 0;
+    bottom: 60px;
+    left: 400px;
     z-index: 1;
     background-color: #f9f9f9;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
-    padding: 10px;
   }
 
   .sending-options button {
     display: block;
-    width: 100%;
-    text-align: left;
     padding: 5px;
     border: none;
     background-color: transparent;
@@ -62,9 +76,37 @@
     background-color: #ddd;
   }
 
-  /* Add this style to the parent element of the send button */
   .send-button-container {
     position: relative;
+  }
+
+  .send-button {
+    margin-left: -48px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    background-image: url("send.png");
+    background-size: 35px 35px;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .send-button:hover {
+    background-color: #ddd;
+  }
+
+  .send-button:active {
+    background-color: #ccc;
+  }
+
+  .send-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    margin-left: 10px;
   }
 </style>
 
@@ -76,26 +118,24 @@
         <Message {msg}/>
       {/each}
     </div>
-    <input bind:value={message} type="text" placeholder="Type a message..." />
-    <!-- Add the send-button-container class to the parent element of the send button -->
     <div class="send-button-container">
-      <!-- svelte-ignore a11y-mouse-events-have-key-events -->
+      <input bind:value={message} type="text" placeholder="Type a message..." />
       <button
+        class="send-button"
         on:mousedown={handleMouseDown}
         on:mouseup={handleMouseUp}
         on:click={handleSendMessage}>
-        Send
       </button>
       {#if showSendingOptions}
         <div
           class="sending-options"
           on:mouseleave={() => showSendingOptions = false}>
-          <button>I'm lazy!</button>
+          <button on:click={handleSendAiMessage}>I'm lazy!</button>
         </div>
       {/if}
     </div>
-    <button on:click={handleCloseConversation}>Close conversation</button>
   </div>
+  <button on:click={handleCloseConversation}>Close conversation</button>
 {:else}
   <div>Please select a conversation</div>
 {/if}
