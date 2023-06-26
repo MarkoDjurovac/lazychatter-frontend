@@ -13,7 +13,6 @@
     onMount(async () => {
         const res = await getUserList();
         allUsers = res.data;
-        console.log(allUsers);
     });
 
     function handleCloseDialog() {
@@ -22,18 +21,17 @@
 
     async function handleStartChat() {
         const res = await startNewChat(selectedUsers);
-        console.log(res);
-        dispatch('close');
+        dispatch('close', res.data);
     }
 
     function handleSelectParticipant(event: Event) {
         const user = (event.target as HTMLInputElement).value;
-        if (selectedUsers.includes(user)) {
-            selectedUsers = selectedUsers.filter(u => u !== user);
-        } else {
+        
+        if (!selectedUsers.includes(user)) {
             selectedUsers.push(user);
+        } else {
+            selectedUsers = selectedUsers.filter((selectedUser) => selectedUser !== user);
         }
-        console.log(selectedUsers);
     }
 </script>
 
@@ -49,7 +47,7 @@
         <div class="p-5">
             {#each allUsers as user}
                 <div class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer">
-                    <input type="checkbox" value={user} on:select={handleSelectParticipant}/>
+                    <input type="checkbox" value={user} on:change={handleSelectParticipant}/>
                     <img src={defaultUserIcon} alt="User icon" class="w-8 h-8 inline-block mr-2"/>
                     {user}
                 </div>

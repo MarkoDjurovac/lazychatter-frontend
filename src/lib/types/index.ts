@@ -45,8 +45,8 @@ export type Chat = {
  * @property {Message[]} messages - The chat's messages
  */
 export type Message = {
-    id: string;
-    chatId: string;
+    id: string | null;
+    chatID: string;
     messageText: string;
-    aiOptions: string;
+    aiOptions: string | null;
 }

@@ -10,7 +10,12 @@
      * @function
      */
     const dispatch = createEventDispatcher();
-    let isSettingsOpen = false;
+
+    /*
+     * Indicates whether settings popup is open or not.
+     * @type {boolean}
+     */
+    let isSettingsOpen: boolean = false;
 
     function handleOpenContacts() {
         dispatch('opencontacts');
@@ -31,10 +36,16 @@
     function handleToggleTheme() {
         dispatch('toggletheme');
     }
+
+    function handleOpenProfile() {
+        dispatch('openprofile');
+    }
 </script>
 
 <div class="flex flex-col justify-between bg-gray-50 p-4 space-y-4 h-full">
-    <img src={defaultProfileIcon} alt="Default profile icon" class="w-12 self-center"/>
+    <button on:click={handleOpenProfile} class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded">
+        <img src={defaultProfileIcon} alt="Default profile icon" class="w-12 self-center"/>
+    </button>
     <button on:click={handleOpenChat} class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded">
         <img src={chatIcon} alt="Chat" class="w-8 self-center"/>
     </button>

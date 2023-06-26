@@ -10,6 +10,8 @@
     let isChatOpen = false;
     let isSettingsOpen = false;
 
+    let chat: any;
+
     function handleOpenContacts() {
         isContactsOpen = true;
         isChatListOpen = false;
@@ -20,8 +22,9 @@
         isContactsOpen = false;
     }
 
-    function handleOpenChat() {
+    function handleOpenChat(event: CustomEvent) {
         isChatOpen = true;
+        chat = event.detail;
     }
 
     function handleCloseChatList() {
@@ -80,7 +83,7 @@
         {/if}
         {#if isChatOpen}
             <div class="flex-1 border-l border-gray-500" transition:fly="{{ x: -10000, duration: 300 }}">
-                <Chat on:closechat={handleCloseChat}/>
+                <Chat on:closechat={handleCloseChat} chat={chat}/>
             </div>
         {/if}
     </div>

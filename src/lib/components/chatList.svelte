@@ -5,15 +5,23 @@
     import { createEventDispatcher } from 'svelte';
     import CreateChat from '$lib/components/createChat.svelte';
     import { onMount } from 'svelte';
+    import { getUserChats } from '../../services/chat';
 
     const dispatch = createEventDispatcher();
 
-    let chats = [];
-    let search = '';
-    let isStartingNewChat = false;
+    let allChats: any= [];
+    let chats: any = [];
+    let search: string = '';
+    let isStartingNewChat: boolean = false;
 
-    function handleOpenChat() {
-        dispatch('openchat');
+    onMount(async () => {
+        const res = await getUserChats();
+        allChats = res.data;
+        chats = [...allChats];
+    });
+
+    function handleOpenChat(event: CustomEvent) {
+        dispatch('openchat', event.detail);
     }
 
     function handleCloseChatList() {
@@ -24,15 +32,26 @@
         isStartingNewChat = true;
     }
 
-    function handleCloseDialog() {
+    async function handleCloseDialog(event: CustomEvent) {
         isStartingNewChat = false;
+        const res = await getUserChats();
+        allChats = res.data;
+        chats = [...allChats];
+    }
+
+    function filterChats(event: Event) {
+        const search = (event.target as HTMLInputElement).value;
+        
+        chats = allChats.filter((chat: any) => {
+            return chat.participants.some((participant: any) => participant.username.includes(search));
+        });
     }
   </script>
   
 
   <div class="flex flex-col h-full bg-white space-y-4">
     <div class="flex items-center bg-slate-300 p-1">
-        <input bind:value={search} type="text" placeholder="Search chats..." class="flex-grow py-2 px-4 bg-gray-50 rounded" />
+        <input bind:value={search} on:input={filterChats} type="text" placeholder="Search chats..." class="flex-grow py-2 px-4 bg-gray-50 rounded" />
         <button on:click={handleStartChat} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2">
             <img src={newChatIcon} alt="Start a new chat" class="w-8 h-8"/>
         </button>
@@ -42,7 +61,9 @@
     </div>
     <div class="overflow-y-auto space-y-4 flex-grow">
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div on:click={handleOpenChat} class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer">Chat 1</div>
+        {#each chats as chat}
+            <ChatListItem on:openchat={handleOpenChat} chat={chat} />
+        {/each}
     </div>
 </div>
 
