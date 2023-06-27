@@ -57,3 +57,15 @@ export function updateUserData(userInput: UserInput){
         }
     });
 }
+
+/*
+ * Deletes the user
+ * @function
+ */
+export function deleteUser(){
+    return axios.delete(ENV.BACKEND_URL.DEV + ENV.SERVICE.USER, {
+        headers: {
+            Authorization: "Bearer " + Cookies.get("jwt")
+        }
+    });
+}

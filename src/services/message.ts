@@ -53,7 +53,7 @@ export async function getMessagesByChatId(chatId: string): Promise<Message[]> {
  * @async
  */
 export async function editMessage(message: Message) {
-    return axios.patch(ENV.BACKEND_URL.DEV + ENV.SERVICE.MESSAGE + "/" + message.id, {
+    return axios.patch(ENV.BACKEND_URL.DEV + ENV.SERVICE.MESSAGE, {
             id: message.id,
             chatID: message.chatID,
             sender: message.sender,

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-	import { getMyUserData, updateUserData } from '../../services/user';
+	import { getMyUserData, updateUserData, deleteUser } from '../../services/user';
     import { createEventDispatcher } from 'svelte';
 	import { Utils } from '$lib/utilities';
     import type { UserInput, User } from '$lib/types';
@@ -41,8 +41,13 @@
         const result = await updateUserData(userInput);
 
         if( result.status === 200) {
-            dispatch('profileupdated');
+            dispatch('profileupdatedordeleted');
         }
+    }
+
+    async function handleDeleteUser() {
+        await deleteUser();
+        dispatch('profileupdatedordeleted');
     }
 </script>
 
@@ -62,6 +67,9 @@
                 <input type="password" name="password" placeholder="New password" class="w-full mb-4 rounded-md" required/>
                 <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Save changes
+                </button>
+                <button on:click={handleDeleteUser} class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Delete this profile
                 </button>
             </form>
         </div>

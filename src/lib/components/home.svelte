@@ -110,6 +110,10 @@
     function handleToggleTheme() {
         // TODO: toggle theme
     }
+
+    function handleProfileUpdatedOrDeleted() {
+        handleLogout();
+    }
 </script>
 
 
@@ -147,7 +151,7 @@
             </div>
         {/if}
         {#if isProfileOpen}
-            <Profile on:closeprofile={handleCloseProfile} on:profileupdated={handleLogout}/>
+            <Profile on:closeprofile={handleCloseProfile} on:profileupdatedordeleted={handleProfileUpdatedOrDeleted} />
         {/if}
     </div>
 </div>
