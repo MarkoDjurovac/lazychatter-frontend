@@ -58,8 +58,8 @@
         </div>
         <div class="p-5">
             <form on:submit|preventDefault={handleSaveChanges}>
-                <input type="text" name="username" placeholder="New username" value={user?.username} class="w-full mb-4 rounded-md"/>
-                <input type="password" name="password" placeholder="New password" class="w-full mb-4 rounded-md"/>
+                <input type="text" name="username" placeholder="New username" value={user?.username} class="w-full mb-4 rounded-md" required/>
+                <input type="password" name="password" placeholder="New password" class="w-full mb-4 rounded-md" required/>
                 <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Save changes
                 </button>
