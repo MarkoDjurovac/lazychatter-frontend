@@ -51,12 +51,3 @@ export type Message = {
     messageText: string;
     aiOptions: string | null;
 }
-
-/*
- * Represents a JSON Web Token
- * @typedef {Object} JWT
- * @property {string} token - The token
- */
-export type JWT = {
-    token: string | null;
-}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JWT, User } from '../lib/types';
+	import type { User } from '../lib/types';
 	import Home from '../lib/components/home.svelte';
 	import Login from '../lib/components/login.svelte';
 	import Toast from '../lib/components/toast.svelte';
