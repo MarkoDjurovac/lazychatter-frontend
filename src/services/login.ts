@@ -6,7 +6,7 @@ import ENV from "../conf/env.json";
 /*
  * Calls the backend to authenticate the user
  * @param userInput the user input
- * @returns the jwt object
+ * @returns the user object
  */
 export async function login(userInput: UserInput): Promise<User | null> {
     const response = await axios.post(ENV.BACKEND_URL.DEV + ENV.SERVICE.LOGIN, {}, {

@@ -1,23 +1,41 @@
 <script lang="ts">
-    import defaultProfileIcon from '$lib/assets/default-pp.svg';
-    import closeIcon from '$lib/assets/close.svg';
     import { onMount } from 'svelte';
 	import { getMyUserData, updateUserData } from '../../services/user';
     import { createEventDispatcher } from 'svelte';
-	import type { UserInput, User } from '$lib/types';
 	import { Utils } from '$lib/utilities';
+    import type { UserInput, User } from '$lib/types';
+    import closeIcon from '$lib/assets/close.svg';
 
+    /*
+     * Dispatches events to the parent component.
+     * @function
+     */
     const dispatch = createEventDispatcher();
+
+    /*
+     * The user that is currently logged in.
+     * @type {User}
+     */
     let user: User;
     
+    /*
+     * Gets the user data when the component is mounted.
+     */
     onMount(async () => {
         user = await getMyUserData();
     });
-
+    
+    /*
+     * Handles the closeprofile event.
+     */
     function handleCloseDialog() {
         dispatch('closeprofile');
     }
 
+    /*
+     * Handles the savechanges event.
+     * @param {Event} event - The event that is dispatched when the user saves the changes.
+     */
     async function handleSaveChanges(event: Event) {
         const userInput: UserInput = Utils.getUserInput(event);
         const result = await updateUserData(userInput);

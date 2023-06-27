@@ -3,7 +3,10 @@ import Cookies from 'js-cookie';
 import type { Chat, Message, User } from '../lib/types';
 import ENV from '../conf/env.json';
 
-
+/*
+ * Starts a new chat room
+ * @param users the users to add to the chat
+ */
 export async function startNewChat(users: User[]): Promise<Chat>{
 
     const participants = users.map((user) => {
@@ -25,6 +28,10 @@ export async function startNewChat(users: User[]): Promise<Chat>{
     } as Chat;
 }
 
+/*
+ * Gets all chats the user is in
+ * @returns the list of chats
+ */
 export async function getUserChats(): Promise<Chat[]>{
     const result = await axios.get(ENV.BACKEND_URL.DEV + ENV.SERVICE.CHAT, {
         headers: {

@@ -3,12 +3,18 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import ENV from '../conf/env.json';
 
-// Endpoint: /register
+/*
+ * Registers a new user via the backend
+ * @param userInput the user input
+ */
 export function register(userInput: UserInput) {
     return axios.post(ENV.BACKEND_URL.DEV + ENV.SERVICE.REGISTER, userInput);
 }
 
-// Endpoint: /me
+/*
+ * Gets the user data of the currently logged in user
+ * @returns the user object
+ */
 export async function getMyUserData(): Promise<User> {
     const result = await axios.get(ENV.BACKEND_URL.DEV + ENV.SERVICE.ME, {
         headers: {
@@ -22,6 +28,10 @@ export async function getMyUserData(): Promise<User> {
     } as User;
 }
 
+/*
+ * Gets all the registered users
+ * @returns the list of users
+ */
 export async function getUserList(): Promise<User[]> {
     const result = await axios.get(ENV.BACKEND_URL.DEV + ENV.SERVICE.USER_LIST, {
         headers: {
@@ -36,6 +46,10 @@ export async function getUserList(): Promise<User[]> {
     });
 }
 
+/*
+ * Updates the users credentials
+ * @param userInput the user input
+ */
 export function updateUserData(userInput: UserInput){
     return axios.put(ENV.BACKEND_URL.DEV + ENV.SERVICE.USER, userInput, {
         headers: {

@@ -4,66 +4,111 @@
     import ChatComp from '$lib/components/chat.svelte';
     import Users from '$lib/components/users.svelte';
     import Profile from '$lib/components/profile.svelte';
+    import Cookies from 'js-cookie';
     import { fly } from 'svelte/transition';
-	import Cookies from 'js-cookie';
 	import type { User, Chat} from '$lib/types';
     
+    /*
+     * Control variables for showing and hiding components.
+     * @type {boolean}
+     */
     let isContactsOpen = false;
     let isChatListOpen = false;
     let isChatOpen = false;
     let isSettingsOpen = false;
     let isProfileOpen = false;
     
-
+    /*
+     * The chat to be opened.
+     * @type {Chat}
+     */
     let chat: Chat;
+
+    /*
+     * The user that is logged in.
+     * @type {User}
+     */
     export let user: User;
 
+    /*
+     * Handle the open contacts event.
+     */
     function handleOpenContacts() {
         isContactsOpen = true;
         isChatListOpen = false;
     }
 
+    /*
+     * Handle the open chat list event.
+     */
     function handleOpenChatList() {
         isChatListOpen = true;
         isContactsOpen = false;
     }
 
+    /*
+     * Handle the open chat event.
+     */
     function handleOpenChat(event: CustomEvent) {
         isChatOpen = true;
         chat = event.detail;
     }
 
+    /*
+     * Handle the close chat list event.
+     */
     function handleCloseChatList() {
         isChatListOpen = false;
     }
 
+    /*
+     * Handle the close contacts event.
+     */
     function handleCloseContacts() {
         isContactsOpen = false;
     }
 
+    /*
+    * Handle the close chat event.
+    */
     function handleCloseChat() {
         isChatOpen = false;
     }
 
+    /*
+     * Handle the open settings event.
+     */
     function handleOpenSettings() {
         isSettingsOpen = true;
     }
 
+    /*
+     * Handle logout event.
+     */
     function handleLogout() {
         Cookies.remove('jwt');
         window.location.reload();
     }
 
-    function handleToggleTheme() {
-        // TODO: toggle theme
-    }
-
+    /*
+     * Handle the open profile event.
+     */
     function handleOpenProfile() {
         isProfileOpen = true;
     }
 
+    /*
+     * Handle the close profile event.
+     */
     function handleCloseProfile() {
         isProfileOpen = false;
+    }
+
+    /*
+     * Handle the toggle theme event.
+     */
+    function handleToggleTheme() {
+        // TODO: toggle theme
     }
 </script>
 

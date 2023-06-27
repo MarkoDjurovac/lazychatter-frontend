@@ -3,7 +3,10 @@ import Cookies from 'js-cookie';
 import ENV from '../conf/env.json';
 import type { Message } from '$lib/types';
 
-// Endpoint: /message
+/*
+ * Sends a message via the backend
+ * @param message the message to send
+ */
 export async function sendMessage(message: Message) {
     return axios.post(ENV.BACKEND_URL.DEV + ENV.SERVICE.MESSAGE, {
             id: message.id,
@@ -20,7 +23,11 @@ export async function sendMessage(message: Message) {
     );
 }
 
-// Endpoint: /chat/{chatId}
+/*
+ * Gets all messages from a chat
+ * @param chatId the chat's id
+ * @returns messages from the chat
+ */
 export async function getMessagesByChatId(chatId: string): Promise<Message[]> {
     const result = await axios.get(ENV.BACKEND_URL.DEV + ENV.SERVICE.MESSAGE + ENV.SERVICE.CHAT + "/" + chatId, {
         headers: {

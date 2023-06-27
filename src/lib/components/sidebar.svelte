@@ -17,26 +17,50 @@
      */
     let isSettingsOpen: boolean = false;
 
+    /*
+     * Handles the open contacts event.
+     * @function
+     */
     function handleOpenContacts() {
         dispatch('opencontacts');
     }
 
+    /*
+     * Handles the open chat event.
+     * @function
+     */
     function handleOpenChat() {
         dispatch('openchatlist');
     }
 
+    /*
+     * Handles the open settings event.
+     * @function
+     */
     function handleOpenSettings() {
         isSettingsOpen = !isSettingsOpen;
     }
 
+    /*
+     * Handles the logout event.
+     * @function
+     */
     function handleLogout() {
         dispatch('logout');
     }
 
+    /*
+     * Handles the toggle theme event.
+     * @function
+     */
     function handleToggleTheme() {
         dispatch('toggletheme');
     }
 
+    /*
+     * Handles the open profile event.
+     * @function
+     */
     function handleOpenProfile() {
         dispatch('openprofile');
     }

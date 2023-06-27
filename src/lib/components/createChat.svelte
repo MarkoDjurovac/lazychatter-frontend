@@ -3,27 +3,54 @@
     import { onMount }  from 'svelte';
     import { getUserList } from '../../services/user';
     import { startNewChat } from '../../services/chat';
+	import type { Chat, User} from '$lib/types';
     import defaultUserIcon from '$lib/assets/default-pp.svg';
     import closeIcon from '$lib/assets/close.svg';
-	import type { Chat, User} from '$lib/types';
 
+   /*
+    * Dispatches events to the parent component.
+    * @function
+    */
     const dispatch = createEventDispatcher();
+
+   /*
+    * All users that are currently registered.
+    * @type {User[]}
+    */
     let allUsers: User[] = [];
+
+    /*
+     * The users that are currently selected.
+     * @type {User[]}
+     */
     let selectedUsers: User[] = [];
 
+    /*
+     * Gets all users when the component is mounted.
+     */
     onMount(async () => {
         allUsers = await getUserList();
     });
 
+    /*
+     * Handles the close event.
+     */
     function handleCloseDialog() {
         dispatch('close');
     };
 
+    /*
+     * Handles the startchat event.
+     */
     async function handleStartChat() {
         const chat: Chat = await startNewChat(selectedUsers);
         dispatch('close', chat);
     }
 
+    /*
+     * Handles the selection of a chat participant.
+     * @param {Event} event - The event that is dispatched when the user selects a chat participant.
+     */
     function handleSelectParticipant(event: Event) {
         const username: string = (event.target as HTMLInputElement).value;
         

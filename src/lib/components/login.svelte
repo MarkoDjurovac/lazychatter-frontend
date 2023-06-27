@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { User, UserInput, JWT } from '../types';
-    import logoIcon from '$lib/assets/logo.svg';
     import Cookies from 'js-cookie';
     import { createEventDispatcher } from 'svelte';
     import { login } from '../../services/login';
     import { register } from '../../services/user';
-    import { Utils } from '$lib/utilities';
+    import { Utils } from '$lib/utilities'; 
+    import type { User, UserInput } from '../types';
+    import logoIcon from '$lib/assets/logo.svg';
 
     /*
      * Dispatches events to the parent component.
@@ -19,6 +19,10 @@
      */
     let isRegistering: boolean = false;
 
+    /*
+     * The user that is currently logged in.
+     * @type {User}
+     */
     let user: User | null;
 
     /*

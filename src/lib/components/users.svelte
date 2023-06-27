@@ -1,26 +1,55 @@
 <script lang="ts">
-    import defaultUserIcon from '$lib/assets/default-pp.svg';
-    import closeIcon from '$lib/assets/close.svg';
     import { createEventDispatcher } from 'svelte';
     import {onMount} from 'svelte';
     import {getUserList} from '../../services/user';
 	import type { User } from '$lib/types';
+    import defaultUserIcon from '$lib/assets/default-pp.svg';
+    import closeIcon from '$lib/assets/close.svg';
 
+   /*
+    * Dispatches events to the parent component.
+    * @function
+    */
     const dispatch = createEventDispatcher();
 
+   /*
+    * All users that are currently registered.
+    * @type {User[]}
+    */
     let allUsers: User[] = [];
-    let users: User[] = [];
-    let search = '';
 
+    /*
+     * The users that are currently displayed.
+     * @type {User[]}
+     */
+    let users: User[] = [];
+
+    /*
+     * The search string.
+     * @type {string}
+     */
+    let search: string = '';
+
+    /*
+     * Gets all users when the component is mounted.
+     */
     onMount(async () => {
         allUsers = await getUserList();
         users = [...allUsers];
     });
 
+    /*
+     * Handles the close event.
+     * @function
+     */
     function handleCloseContacts() {
         dispatch('closecontacts');
     }
 
+    /*
+     * Filter users by search string.
+     * @param {Event} event - The event that provides the search string.
+     */
     function filterUsers(event: Event) {
         search = (event.target as HTMLInputElement).value;
         users = allUsers.filter(user => user.username?.includes(search));

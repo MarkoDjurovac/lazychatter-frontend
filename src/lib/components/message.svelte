@@ -2,8 +2,16 @@
     import { createEventDispatcher } from 'svelte';
     import type { Message } from '../types';
 
+    /*
+     * Dispatches events to the parent component.
+     * @function
+     */
     const dispatch = createEventDispatcher();
 
+    /*
+     * Message object to be displayed.
+     * @type {Message}
+     */
     export let message: Message;
 </script>
 

@@ -1,12 +1,24 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import type { Chat, User } from '../types';
     import { Utils } from '../utilities';
+    import type { Chat } from '../types';
 
+    /*
+     * Dispatches events to the parent component.
+     * @function
+     */
     const dispatch = createEventDispatcher();
 
+    /*
+     * The chat that is currently open.
+     * @type {Chat}
+     */
     export let chat: Chat;
 
+    /*
+     * Handles the openchat event.
+     * @param {Event} event - The event that is dispatched when the user wants to open a chat.
+     */
     function handleOpenChat(event: Event) {
         dispatch('openchat', chat);
     }
