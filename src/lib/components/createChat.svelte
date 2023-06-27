@@ -5,14 +5,14 @@
     import { startNewChat } from '../../services/chat';
     import defaultUserIcon from '$lib/assets/default-pp.svg';
     import closeIcon from '$lib/assets/close.svg';
+	import type { Chat, User} from '$lib/types';
 
     const dispatch = createEventDispatcher();
-    let allUsers: string[] = [];
-    let selectedUsers: string[] = [];
+    let allUsers: User[] = [];
+    let selectedUsers: User[] = [];
 
     onMount(async () => {
-        const res = await getUserList();
-        allUsers = res.data;
+        allUsers = await getUserList();
     });
 
     function handleCloseDialog() {
@@ -20,17 +20,17 @@
     };
 
     async function handleStartChat() {
-        const res = await startNewChat(selectedUsers);
-        dispatch('close', res.data);
+        const chat: Chat = await startNewChat(selectedUsers);
+        dispatch('close', chat);
     }
 
     function handleSelectParticipant(event: Event) {
-        const user = (event.target as HTMLInputElement).value;
+        const username: string = (event.target as HTMLInputElement).value;
         
-        if (!selectedUsers.includes(user)) {
-            selectedUsers.push(user);
+        if (selectedUsers.find(user => user.username === username)) {
+            selectedUsers = selectedUsers.filter(user => user.username !== username);
         } else {
-            selectedUsers = selectedUsers.filter((selectedUser) => selectedUser !== user);
+            selectedUsers.push(allUsers.find(user => user.username === username)!);
         }
     }
 </script>
@@ -47,9 +47,9 @@
         <div class="p-5">
             {#each allUsers as user}
                 <div class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer">
-                    <input type="checkbox" value={user} on:change={handleSelectParticipant}/>
+                    <input type="checkbox" value={user.username} on:change={handleSelectParticipant}/>
                     <img src={defaultUserIcon} alt="User icon" class="w-8 h-8 inline-block mr-2"/>
-                    {user}
+                    {user.username}
                 </div>
             {/each}
             <button on:click={handleStartChat} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2">

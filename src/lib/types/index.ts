@@ -6,8 +6,8 @@
  * @property {Chat[] | null} chatList - The user's chat list
  */
 export type User = {
-    id: string;
-    username: string;
+    id: string | null;
+    username: string | null;
     chatList: Chat[] | null;
 }
 
@@ -21,7 +21,7 @@ export type User = {
 export type UserInput = {
     username: string;
     password: string;
-    chatIds: string[];
+    chatIds: string[] | null;
 }
 
 /*
@@ -33,20 +33,30 @@ export type UserInput = {
  */
 export type Chat = {
     chatId: string;
-    participants: User[];
-    messages: Message[];
+    paritcipants: User[];
+    messages: Message[] | null;
 }
 
 /*
  * Represents a message in a chat
- * @typedef {Object} Chat
- * @property {string} id - The chat's id
+ * @typedef {Object} Message
+ * @property {string} id - The chat's ID
  * @property {User[]} participants - The chat's participants
  * @property {Message[]} messages - The chat's messages
  */
 export type Message = {
     id: string | null;
     chatID: string;
+    sender: string | null;
     messageText: string;
     aiOptions: string | null;
+}
+
+/*
+ * Represents a JSON Web Token
+ * @typedef {Object} JWT
+ * @property {string} token - The token
+ */
+export type JWT = {
+    token: string | null;
 }

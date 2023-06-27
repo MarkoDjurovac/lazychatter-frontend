@@ -4,19 +4,19 @@
     import closeIcon from '$lib/assets/close.svg';
     import { createEventDispatcher } from 'svelte';
     import CreateChat from '$lib/components/createChat.svelte';
+    import type { Chat, User } from '$lib/types';
     import { onMount } from 'svelte';
     import { getUserChats } from '../../services/chat';
 
     const dispatch = createEventDispatcher();
 
-    let allChats: any= [];
-    let chats: any = [];
+    let allChats: Chat[] = [];
+    let chats: Chat[] = [];
     let search: string = '';
     let isStartingNewChat: boolean = false;
 
     onMount(async () => {
-        const res = await getUserChats();
-        allChats = res.data;
+        allChats = await getUserChats();
         chats = [...allChats];
     });
 
@@ -34,17 +34,13 @@
 
     async function handleCloseDialog(event: CustomEvent) {
         isStartingNewChat = false;
-        const res = await getUserChats();
-        allChats = res.data;
+        allChats = await getUserChats();
         chats = [...allChats];
     }
 
     function filterChats(event: Event) {
         const search = (event.target as HTMLInputElement).value;
-        
-        chats = allChats.filter((chat: any) => {
-            return chat.participants.some((participant: any) => participant.username.includes(search));
-        });
+        chats = allChats.filter(chat => chat.paritcipants.filter(participant => participant.username?.toLowerCase().includes(search.toLowerCase())).length > 0);
     }
   </script>
   

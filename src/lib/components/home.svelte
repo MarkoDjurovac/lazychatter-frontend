@@ -1,16 +1,22 @@
 <script lang="ts">
     import Sidebar from '$lib/components/sidebar.svelte';
     import ChatList from '$lib/components/chatList.svelte';
-    import Chat from '$lib/components/chat.svelte';
+    import ChatComp from '$lib/components/chat.svelte';
     import Users from '$lib/components/users.svelte';
+    import Profile from '$lib/components/profile.svelte';
     import { fly } from 'svelte/transition';
+	import Cookies from 'js-cookie';
+	import type { User, Chat} from '$lib/types';
     
     let isContactsOpen = false;
     let isChatListOpen = false;
     let isChatOpen = false;
     let isSettingsOpen = false;
+    let isProfileOpen = false;
+    
 
-    let chat: any;
+    let chat: Chat;
+    export let user: User;
 
     function handleOpenContacts() {
         isContactsOpen = true;
@@ -44,12 +50,20 @@
     }
 
     function handleLogout() {
-        localStorage.removeItem('jwt');
+        Cookies.remove('jwt');
         window.location.reload();
     }
 
     function handleToggleTheme() {
         // TODO: toggle theme
+    }
+
+    function handleOpenProfile() {
+        isProfileOpen = true;
+    }
+
+    function handleCloseProfile() {
+        isProfileOpen = false;
     }
 </script>
 
@@ -61,7 +75,8 @@
                         on:openchatlist={handleOpenChatList}
                         on:opensettings={handleOpenSettings}
                         on:logout={handleLogout}
-                        on:toggletheme={handleToggleTheme}/>
+                        on:toggletheme={handleToggleTheme}
+                        on:openprofile={handleOpenProfile}/>
         </div>
         {#if !isContactsOpen && !isChatListOpen && !isChatOpen}
             <div class="flex-1" transition:fly="{{ x: -10000, duration: 300 }}">
@@ -83,8 +98,11 @@
         {/if}
         {#if isChatOpen}
             <div class="flex-1 border-l border-gray-500" transition:fly="{{ x: -10000, duration: 300 }}">
-                <Chat on:closechat={handleCloseChat} chat={chat}/>
+                <ChatComp on:closechat={handleCloseChat} chat={chat} user={user}/>
             </div>
+        {/if}
+        {#if isProfileOpen}
+            <Profile on:closeprofile={handleCloseProfile} on:profileupdated={handleLogout}/>
         {/if}
     </div>
 </div>

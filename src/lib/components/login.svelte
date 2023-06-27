@@ -1,6 +1,7 @@
 <script lang="ts">
-    import type { User, UserInput } from '../types';
+    import type { User, UserInput, JWT } from '../types';
     import logoIcon from '$lib/assets/logo.svg';
+    import Cookies from 'js-cookie';
     import { createEventDispatcher } from 'svelte';
     import { login } from '../../services/login';
     import { register } from '../../services/user';
@@ -18,6 +19,8 @@
      */
     let isRegistering: boolean = false;
 
+    let user: User | null;
+
     /*
      * Toggles the form based on login or register.
      * @function
@@ -34,11 +37,9 @@
      */
     async function handleLogin(event: Event) {
         const userInput: UserInput = Utils.getUserInput(event);
-        const jwt = await login(userInput);
-        
-        if (jwt) {
-            localStorage.setItem('jwt', jwt);
-            dispatch('login', localStorage.getItem('jwt'));
+        user = await login(userInput);
+        if (Cookies.get('jwt')) {
+            dispatch('login', user);
         }
     }
 

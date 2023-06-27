@@ -1,4 +1,4 @@
-import type { UserInput } from "$lib/types";
+import type { UserInput, User} from "$lib/types";
 
 /*
  * Helper function to get user input from the form.
@@ -52,9 +52,14 @@ function validateUserInput(userInput: UserInput) {
     }
 }
 
+function getParticipants(participants: User[]): string {
+    return participants.map((participant) => participant.username).join(', ');
+}
+
 const Utils = {
     getUserInput: getUserInput,
-    validateUserInput: validateUserInput
+    validateUserInput: validateUserInput,
+    getParticipants: getParticipants
 }
 
 export { Utils };

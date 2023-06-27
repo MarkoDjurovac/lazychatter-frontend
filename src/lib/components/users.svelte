@@ -4,16 +4,16 @@
     import { createEventDispatcher } from 'svelte';
     import {onMount} from 'svelte';
     import {getUserList} from '../../services/user';
+	import type { User } from '$lib/types';
 
     const dispatch = createEventDispatcher();
 
-    let allUsers: string[] = [];
-    let users: string[] = [];
+    let allUsers: User[] = [];
+    let users: User[] = [];
     let search = '';
 
     onMount(async () => {
-        const res = await getUserList();
-        allUsers = res.data;
+        allUsers = await getUserList();
         users = [...allUsers];
     });
 
@@ -23,7 +23,7 @@
 
     function filterUsers(event: Event) {
         search = (event.target as HTMLInputElement).value;
-        users = allUsers.filter(user => user.includes(search));
+        users = allUsers.filter(user => user.username?.includes(search));
     }
   </script>
 
@@ -38,7 +38,7 @@
         {#each users as user}
             <div class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer">
                 <img src={defaultUserIcon} alt="User icon" class="w-8 h-8 inline-block mr-2"/>
-                {user}
+                {user.username}
             </div>
         {/each}
     </div>
