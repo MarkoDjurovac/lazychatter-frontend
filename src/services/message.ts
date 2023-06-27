@@ -45,3 +45,37 @@ export async function getMessagesByChatId(chatId: string): Promise<Message[]> {
         } as Message;
     })
 }
+
+/*
+ * Edits a message
+ * @param messageId the message's id
+ * @function
+ * @async
+ */
+export async function editMessage(message: Message) {
+    return axios.patch(ENV.BACKEND_URL.DEV + ENV.SERVICE.MESSAGE + "/" + message.id, {
+            id: message.id,
+            chatID: message.chatID,
+            sender: message.sender,
+            messageText: message.messageText,
+            aiOptions: message.aiOptions
+        }, {
+        headers: {
+            Authorization: "Bearer " + Cookies.get("jwt")
+        }
+    });
+}
+
+/*
+ * Deletes a message
+ * @param messageId the message's id
+ * @function
+ * @async
+ */
+export async function deleteMessage(message: Message) {
+    return axios.delete(ENV.BACKEND_URL.DEV + ENV.SERVICE.MESSAGE + "/" + message.id, {
+        headers: {
+            Authorization: "Bearer " + Cookies.get("jwt")
+        }
+    });
+}

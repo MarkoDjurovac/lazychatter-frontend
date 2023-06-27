@@ -58,10 +58,27 @@
     });
 
     /*
-      * Sends a new message to the chat.
-      * @param event The event that triggered the function call.
-      * @async
-      */
+     * Watches for changes in the chat prop.
+     */
+    $: {
+      if (chat) {
+        getMessages();
+      }
+    }
+
+    /*
+     * Gets the messages for the chat.
+     * @async
+     */
+    async function getMessages() {
+      messages = await getMessagesByChatId(chat.chatId);
+    }
+
+   /*
+    * Sends a new message to the chat.
+    * @param event The event that triggered the function call.
+    * @async
+    */
     async function sendNewMessage(event: Event) {
       let message: Message = {
         id: null,
@@ -114,6 +131,10 @@
     function handleMouseup() {
       clearTimeout(pressTimer);
     }
+
+    async function handleEditedOrDeletedMessage() {
+      messages = await getMessagesByChatId(chat.chatId);
+    }
   </script>
   
   <div class="flex flex-col h-full bg-white space-y-4 justify-between">
@@ -125,7 +146,7 @@
     </div>
     <div class="overflow-y-scroll">
       {#each messages as message}
-        <MessageBubble message={message} />
+        <MessageBubble user={user} message={message} on:edited={handleEditedOrDeletedMessage} on:deleted={handleEditedOrDeletedMessage}/>
       {/each}
     </div>
     <div class="flex items-center bg-slate-300 p-1 relative">
