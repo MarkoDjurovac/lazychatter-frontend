@@ -1,8 +1,6 @@
 <script lang="ts">
-	
 	import Home from '../lib/components/home.svelte';
 	import Login from '../lib/components/login.svelte';
-	import Toast from '../lib/components/toast.svelte';
 	import Cookies from 'js-cookie';
 	import { fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
@@ -71,7 +69,4 @@
 	<div in:fly="{{ x: 1000, duration: 600 }}" out:fly="{{ x: 1000, duration: 300 }}">
 		<Home user={user}/>
 	</div>
-{/if}
-{#if isRegisterSuccessful}
-	<Toast type="success" message={"OK!"} />
 {/if}

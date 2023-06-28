@@ -1,12 +1,15 @@
 <script lang="ts">
     import ChatListItem from '$lib/components/chatListItem.svelte';
     import CreateChat from '$lib/components/createChat.svelte';
+    import Toast from '$lib/components/toast.svelte';
     import { createEventDispatcher } from 'svelte';
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy} from 'svelte';
     import { getUserChats } from '../../services/chat';
     import type { Chat, User } from '$lib/types';
     import newChatIcon from '$lib/assets/new_chat.svg';
     import closeIcon from '$lib/assets/close.svg';
+
+    export let user: User;
 
     /*
      * Dispatches events to the parent component.
@@ -38,12 +41,47 @@
      */
     let isStartingNewChat: boolean = false;
 
+    let pollingInterval: any;
+
+    /*
+     * Indicates whether the message toast is visible.
+     * @type {boolean}
+     */
+    let isToastVisible: boolean = false;
+
+    /*
+     * The message to show in the toast.
+     * @type {string}
+     */
+    let toastMessage: string = '';
+
+    /*
+    * The type of toast to show.
+    * @type {string}
+    */
+    let toastType: string = '';
+
     /*
      * Gets the chats for the user when the component is mounted.
+     * @function
      */
     onMount(async () => {
-        allChats = await getUserChats();
-        chats = [...allChats];
+        try {
+            allChats = await getUserChats();
+            chats = [...allChats];
+
+            pollingInterval = setInterval(async () => {
+                allChats = await getUserChats();
+                chats = [...allChats];
+            }, 1000);
+        }
+        catch(error: any) {
+            showToast('Error while getting chats', 'error');
+        }
+    });
+
+    onDestroy(() => {
+        clearInterval(pollingInterval);
     });
 
     /*
@@ -74,8 +112,6 @@
      */
     async function handleCloseDialog(event: CustomEvent) {
         isStartingNewChat = false;
-        allChats = await getUserChats();
-        chats = [...allChats];
     }
 
     /*
@@ -86,11 +122,28 @@
         const search = (event.target as HTMLInputElement).value;
         chats = allChats.filter(chat => chat.paritcipants.filter(participant => participant.username?.toLowerCase().includes(search.toLowerCase())).length > 0);
     }
-  </script>
-  
 
-  <div class="flex flex-col h-full bg-white space-y-4">
-    <div class="flex items-center bg-slate-300 p-1">
+   /*
+    * Shows a toast message.
+    * @param {string} message - The message to show.
+    * @param {string} type - The type of toast to show.
+    */
+    function showToast(message: string, type: string) {
+        toastMessage = message;
+        toastType = type;
+        isToastVisible = true;
+
+        setTimeout(() => {
+            isToastVisible = false;
+        }, 3000);
+    }
+</script>
+  
+{#if isToastVisible}
+  <Toast message={toastMessage} type={toastType}/>
+{/if}
+<div class="flex flex-col h-full bg-white space-y-4">
+    <div class="flex items-center bg-slate-200 p-1">
         <input bind:value={search} on:input={filterChats} type="text" placeholder="Search chats..." class="flex-grow py-2 px-4 bg-gray-50 rounded" />
         <button on:click={handleStartChat} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2">
             <img src={newChatIcon} alt="Start a new chat" class="w-8 h-8"/>
@@ -108,5 +161,5 @@
 </div>
 
 {#if isStartingNewChat}
-    <CreateChat on:close={handleCloseDialog} />
+    <CreateChat user={user} on:close={handleCloseDialog} />
 {/if}

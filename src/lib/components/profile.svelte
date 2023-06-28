@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Toast from '$lib/components/toast.svelte';
     import { onMount } from 'svelte';
 	import { getMyUserData, updateUserData, deleteUser } from '../../services/user';
     import { createEventDispatcher } from 'svelte';
@@ -17,12 +18,35 @@
      * @type {User}
      */
     let user: User;
+
+   /*
+    * Indicates whether the message toast is visible.
+    * @type {boolean}
+    */
+    let isToastVisible: boolean = false;
+
+   /*
+    * The message to show in the toast.
+    * @type {string}
+    */
+    let toastMessage: string = '';
+
+   /*
+    * The type of toast to show.
+    * @type {string}
+    */
+    let toastType: string = '';
     
     /*
      * Gets the user data when the component is mounted.
+     * @function
      */
     onMount(async () => {
-        user = await getMyUserData();
+        try {
+            user = await getMyUserData();
+        } catch (error) {
+            showToast('Error while fetching user data.', 'error');
+        }
     });
     
     /*
@@ -38,20 +62,70 @@
      */
     async function handleSaveChanges(event: Event) {
         const userInput: UserInput = Utils.getUserInput(event);
-        const result = await updateUserData(userInput);
-
-        if( result.status === 200) {
-            dispatch('profileupdatedordeleted');
+        const validation: any = Utils.validateUserInput(userInput);
+        
+        if(!validation.isValid) {
+            showToast(validation.message, 'error');
+            highlightInvalidFields(validation.location);
+        }
+        else {
+            try {
+                await updateUserData(userInput);
+                dispatch('profileupdatedordeleted');
+            } catch (error: any) {
+                showToast('Error while updating user.', 'error');
+            }
         }
     }
 
+    /*
+     * Deletes the logged in user.
+     * @function
+     * @async
+     */
     async function handleDeleteUser() {
-        await deleteUser();
-        dispatch('profileupdatedordeleted');
+        try {
+            await deleteUser();
+            dispatch('profileupdatedordeleted');
+        } catch (error: any) {
+            showToast('Error while deleting user.', 'error');
+        }
+    }
+
+    /*
+     * Highlights invalid fields and removes the highlight when the user starts typing.
+     * @function
+     * @param location The location of the invalid field.
+     */
+     function highlightInvalidFields(location: string) {
+        const input = document.querySelector(`input[name=${location}]`);
+        console.log(input);
+        input?.classList.add('border-red-500');
+        input?.addEventListener('input', () => {
+            input.classList.remove('border-red-500');
+        });
+    }
+    
+    /*
+     * Shows a toast message.
+     * @function
+     * @param message The message to show.
+     * @param type The type of toast to show.
+     */
+    function showToast(message: string, type: string) {
+        toastMessage = message;
+        toastType = type;
+        isToastVisible = true;
+
+        setTimeout(() => {
+            isToastVisible = false;
+        }, 3000);
     }
 </script>
 
-
+{#if isToastVisible}
+    <Toast message={toastMessage} type={toastType}/>
+{/if}
 <div class="fixed inset-0 flex items-center justify-center z-10">
     <div class="bg-black opacity-50 fixed inset-0" style="backdrop-filter: blur(5px);"></div>
     <dialog open class="border rounded-md relative bg-white">

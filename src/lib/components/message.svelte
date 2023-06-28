@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Toast from '$lib/components/toast.svelte';
     import { createEventDispatcher } from 'svelte';
     import { deleteMessage, editMessage } from '../../services/message';
     import type { Message, User } from '../types';
@@ -35,6 +36,24 @@
      */
     let isEditMode: boolean = false;
 
+        /*
+     * Indicates whether the message toast is visible.
+     * @type {boolean}
+     */
+     let isToastVisible: boolean = false;
+
+    /*
+    * The message to show in the toast.
+    * @type {string}
+    */
+    let toastMessage: string = '';
+
+    /*
+    * The type of toast to show.
+    * @type {string}
+    */
+    let toastType: string = '';
+
     /*
      * Handles the edit mode of the message.
      * @function
@@ -49,8 +68,13 @@
      * @async
      */
     async function handleDelete() {
-        await deleteMessage(message);
-        dispatch('deleted');
+        try {
+            await deleteMessage(message);
+            dispatch('deleted');
+        }
+        catch(error: any) {
+            showToast('Error while deleting message.', 'error');
+        }
     }
 
     /*
@@ -61,12 +85,33 @@
     async function editMsg(event: KeyboardEvent) {
         if (event.key === 'Enter') {
             message.messageText = editedText;
-            await editMessage(message).catch(error => {
+            try {
+                await editMessage(message).catch(error => {
+                    isEditMode = false;
+                });
                 isEditMode = false;
-            });
-            isEditMode = false;
-            dispatch('edited');
+                dispatch('edited');
+            }
+            catch(error: any) {
+                showToast('Error while editing message.', 'error');
+            }
         }
+    }
+
+    /*
+     * Shows a toast message.
+     * @function
+     * @param message The message to show.
+     * @param type The type of toast to show.
+     */
+    function showToast(message: string, type: string) {
+        toastMessage = message;
+        toastType = type;
+        isToastVisible = true;
+
+        setTimeout(() => {
+            isToastVisible = false;
+        }, 3000);
     }
 </script>
 
@@ -80,6 +125,9 @@
     }
 </style>
 
+{#if isToastVisible}
+    <Toast message={toastMessage} type={toastType}/>
+{/if}
 <div data-sender={message.sender === user.username} class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer message">
     {#if !isEditMode}
         {message.sender} : {message.messageText}

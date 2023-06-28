@@ -7,7 +7,7 @@ import ENV from '../conf/env.json';
  * Registers a new user via the backend
  * @param userInput the user input
  */
-export function register(userInput: UserInput) {
+export async function register(userInput: UserInput) {
     return axios.post(ENV.BACKEND_URL.DEV + ENV.SERVICE.REGISTER, userInput);
 }
 

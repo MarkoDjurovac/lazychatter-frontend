@@ -1,7 +1,8 @@
 <script lang="ts">
   import MessageBubble from '$lib/components/message.svelte';
+  import Toast from '$lib/components/toast.svelte';
   import { createEventDispatcher } from 'svelte';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { Utils } from '$lib/utilities';
   import { sendMessage, getMessagesByChatId} from '../../services/message';
   import type { Message, Chat, User } from '../types';
@@ -50,11 +51,51 @@
      */
     let showPopover = false;
 
-     /*
-     * Gets the messages for the chat when the component is mounted.
+    /*
+     * Contains the interval that is used to poll for new messages.
+     * @type {any}
      */
-     onMount(async () => {
-      messages = await getMessagesByChatId(chat.chatId);
+    let pollingInterval: any;
+
+   /*
+    * Indicates whether the message toast is visible.
+    * @type {boolean}
+    */
+    let isToastVisible: boolean = false;
+
+    /*
+    * The message to show in the toast.
+    * @type {string}
+    */
+    let toastMessage: string = '';
+
+    /*
+    * The type of toast to show.
+    * @type {string}
+    */
+    let toastType: string = '';
+
+     /*
+     * Polls the messages for the chat when the component is mounted.
+     * @function
+     */
+    onMount(async () => {
+      try {
+        messages = await getMessagesByChatId(chat.chatId);
+        pollingInterval = setInterval(async () => {
+          messages = await getMessagesByChatId(chat.chatId);
+        }, 1000);
+      } catch (error) {
+        showToast('Error while getting messages', 'error');
+      }
+    });
+
+    /*
+     * Clears the polling interval when the component is destroyed.
+     * @function
+     */
+    onDestroy(() => {
+      clearInterval(pollingInterval);
     });
 
     /*
@@ -71,7 +112,12 @@
      * @async
      */
     async function getMessages() {
-      messages = await getMessagesByChatId(chat.chatId);
+      try {
+        messages = await getMessagesByChatId(chat.chatId);
+      }
+      catch(error: any) {
+        showToast('Error while getting messages', 'error');
+      }
     }
 
    /*
@@ -88,8 +134,14 @@
         aiOptions: null,
       }
 
-      await sendMessage(message);
-      messages = await getMessagesByChatId(chat.chatId);
+      try {
+        await sendMessage(message);
+        messages = await getMessagesByChatId(chat.chatId);
+      }
+      catch(error: any) {
+        showToast('Error while sending message', 'error');
+      }
+      
       messageText = '';
     }
     
@@ -106,13 +158,20 @@
         aiOptions: aiOption
       };
 
-      await sendMessage(message);
-      messages = await getMessagesByChatId(chat.chatId);
+      try {
+        await sendMessage(message);
+        messages = await getMessagesByChatId(chat.chatId);
+      }
+      catch(error: any) {
+        showToast('Error while sending message', 'error');
+      }
+      
       showPopover = false;
     }
 
     /*
      * Closes the chat.
+     * @function
      */
     function handleCloseChat() {
       dispatch('closechat');
@@ -120,6 +179,7 @@
     
     /*
      * Handles the mousedown event.
+     * @function
      */
     function handleMousedown() {
       pressTimer = setTimeout(() => showPopover = true, 1000);
@@ -127,18 +187,46 @@
 
     /*
      * Handles the mouseup event.
+     * @function
      */
     function handleMouseup() {
       clearTimeout(pressTimer);
     }
 
+    /*
+    * Handles the mouseleave event.
+    * @function
+    * @async
+    */
     async function handleEditedOrDeletedMessage() {
-      messages = await getMessagesByChatId(chat.chatId);
+      try {
+        messages = await getMessagesByChatId(chat.chatId);
+      } catch (error: any) {
+        showToast('Error while editing or deleting message', 'error');
+      }
     }
-  </script>
+    
+   /*
+    * Shows a toast message.
+    * @param {string} message - The message to show.
+    * @param {string} type - The type of toast to show.
+    */
+    function showToast(message: string, type: string) {
+        toastMessage = message;
+        toastType = type;
+        isToastVisible = true;
+
+        setTimeout(() => {
+            isToastVisible = false;
+        }, 3000);
+    }
+</script>
   
-  <div class="flex flex-col h-full bg-white space-y-4 justify-between">
-    <div class="flex items-center bg-slate-300 p-1">
+{#if isToastVisible}
+    <Toast message={toastMessage} type={toastType}/>
+{/if}
+<div class="flex flex-col h-full bg-white space-y-4 justify-between">
+    <div class="flex items-center bg-slate-200 p-1">
       <b>Chat with {Utils.getParticipants(chat.paritcipants)}</b>
       <button on:click={handleCloseChat} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2">
         <img src={closeIcon} alt="Close chat" class="w-8 h-8"/>
@@ -149,7 +237,7 @@
         <MessageBubble user={user} message={message} on:edited={handleEditedOrDeletedMessage} on:deleted={handleEditedOrDeletedMessage}/>
       {/each}
     </div>
-    <div class="flex items-center bg-slate-300 p-1 relative">
+    <div class="flex items-center bg-slate-200 p-1 relative">
       <input type="text" bind:value={messageText} class="flex-grow py-2 px-4 bg-gray-50 rounded pr-10"/> 
       <button 
         on:click={sendNewMessage}
@@ -167,4 +255,4 @@
         </div>
       {/if}
   </div>
-  </div>
+</div>

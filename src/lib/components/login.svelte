@@ -1,5 +1,6 @@
 <script lang="ts">
     import Cookies from 'js-cookie';
+    import Toast from '$lib/components/toast.svelte';
     import { createEventDispatcher } from 'svelte';
     import { login } from '../../services/login';
     import { register } from '../../services/user';
@@ -26,6 +27,24 @@
     let user: User | null;
 
     /*
+     * Indicates whether the message toast is visible.
+     * @type {boolean}
+     */
+    let isToastVisible: boolean = false;
+
+    /*
+     * The message to show in the toast.
+     * @type {string}
+     */
+    let toastMessage: string = '';
+
+    /*
+     * The type of toast to show.
+     * @type {string}
+     */
+    let toastType: string = '';
+
+    /*
      * Toggles the form based on login or register.
      * @function
      */
@@ -34,44 +53,93 @@
     }
 
     /*
-     * Handles the login of an existing user.
+     * Handles the login of an existing user. Displays a toast message on success or error.
      * @async
      * @function
      * @param event The event that triggered the function call.
      */
     async function handleLogin(event: Event) {
+        try {
+            const userInput: UserInput = Utils.getUserInput(event);
+            user = await login(userInput);
+            if (Cookies.get('jwt')) {
+                dispatch('login', user);
+            }
+        }
+        catch(error: any) {
+            switch(error.response.status) {
+                case 401:
+                    error = 'Invalid credentials.';
+                    break;
+                case 404:
+                    error = 'User not found.';
+                    break;
+                default:
+                    error = 'Something went wrong.';
+                    break;
+            }
+            showToast(error, 'error');
+        }  
+    }
+
+    /*
+     * Handles the registration of a new user, displays a toast message on success or error.
+     * @function
+     * @param event The event that triggered the function call.
+     */
+    async function handleRegister(event: Event) {
         const userInput: UserInput = Utils.getUserInput(event);
-        user = await login(userInput);
-        if (Cookies.get('jwt')) {
-            dispatch('login', user);
+        const validation: any = Utils.validateUserInput(userInput);
+    
+        if(!validation.isValid) {
+            showToast(validation.message, 'error');
+            highlightInvalidFields(validation.location);
+        }
+        else {
+            try {
+                const result = await register(userInput);
+                showToast(result.data, 'success');
+            }
+            catch(error: any) {
+                showToast(error.response.data, 'error');
+            }
         }
     }
 
     /*
-     * Handles the registration of a new user.
+     * Shows a toast message.
      * @function
-     * @param event The event that triggered the function call.
+     * @param message The message to show.
+     * @param type The type of toast to show.
      */
-    function handleRegister(event: Event) {
-        const userInput: UserInput = Utils.getUserInput(event);
-        
-        // TODO: validate input
-        const result = {
-            isValid: true,
-            message: "OK"
-        };//Utils.validateUserInput(userInput);
-    
+    function showToast(message: string, type: string) {
+        toastMessage = message;
+        toastType = type;
+        isToastVisible = true;
 
-        if(!result.isValid) {
-            // The error message should be displayed as a toast.
-            console.log(result.message);
-        }
-        else {
-            const result = register(userInput);
-            console.log(result);
-        }
+        setTimeout(() => {
+            isToastVisible = false;
+        }, 3000);
+    }
+
+    /*
+     * Highlights invalid fields and removes the highlight when the user starts typing.
+     * @function
+     * @param location The location of the invalid field.
+     */
+    function highlightInvalidFields(location: string) {
+        const input = document.querySelector(`input[name=${location}]`);
+        console.log(input);
+        input?.classList.add('border-red-500');
+        input?.addEventListener('input', () => {
+            input.classList.remove('border-red-500');
+        });
     }
 </script>
+
+{#if isToastVisible}
+    <Toast message={toastMessage} type={toastType} on:close={() => (isToastVisible = false)} />
+{/if}
 
 <div class="flex items-center justify-center h-screen shadow-lg">
     <div class="bg-white p-6 rounded-lg">
@@ -94,8 +162,8 @@
                 Welcome back to lazyChatter (BETA)!
             </h1>
             <form on:submit|preventDefault={handleLogin} class="w-full">
-                <input type="text" name="username" placeholder="Username" class="w-full mb-4 rounded-md"/>
-                <input type="password" name="password" placeholder="Password" class="w-full mb-4 rounded-md"/>
+                <input type="text" name="username" placeholder="Username" class="w-full mb-4 rounded-md" required/>
+                <input type="password" name="password" placeholder="Password" class="w-full mb-4 rounded-md" required/>
                 <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Login
                 </button>

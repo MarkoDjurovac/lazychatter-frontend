@@ -32,6 +32,7 @@
 
     /*
      * Handle the open contacts event.
+     * @function
      */
     function handleOpenContacts() {
         isContactsOpen = true;
@@ -40,6 +41,7 @@
 
     /*
      * Handle the open chat list event.
+     * @function
      */
     function handleOpenChatList() {
         isChatListOpen = true;
@@ -48,6 +50,7 @@
 
     /*
      * Handle the open chat event.
+     * @function
      */
     function handleOpenChat(event: CustomEvent) {
         isChatOpen = true;
@@ -56,6 +59,7 @@
 
     /*
      * Handle the close chat list event.
+     * @function
      */
     function handleCloseChatList() {
         isChatListOpen = false;
@@ -63,6 +67,7 @@
 
     /*
      * Handle the close contacts event.
+     * @function
      */
     function handleCloseContacts() {
         isContactsOpen = false;
@@ -70,6 +75,7 @@
 
     /*
     * Handle the close chat event.
+    * @function
     */
     function handleCloseChat() {
         isChatOpen = false;
@@ -77,6 +83,7 @@
 
     /*
      * Handle the open settings event.
+     * @function
      */
     function handleOpenSettings() {
         isSettingsOpen = true;
@@ -84,6 +91,7 @@
 
     /*
      * Handle logout event.
+     * @function
      */
     function handleLogout() {
         Cookies.remove('jwt');
@@ -92,6 +100,7 @@
 
     /*
      * Handle the open profile event.
+     * @function
      */
     function handleOpenProfile() {
         isProfileOpen = true;
@@ -99,6 +108,7 @@
 
     /*
      * Handle the close profile event.
+     * @function
      */
     function handleCloseProfile() {
         isProfileOpen = false;
@@ -106,11 +116,16 @@
 
     /*
      * Handle the toggle theme event.
+     * @function
      */
     function handleToggleTheme() {
         // TODO: toggle theme
     }
 
+    /*
+     * Handle the profileupdatedordeleted event.
+     * @function
+     */
     function handleProfileUpdatedOrDeleted() {
         handleLogout();
     }
@@ -137,7 +152,7 @@
         {/if}
         {#if isChatListOpen}
             <div class="flex-1" transition:fly="{{ x: -10000, duration: 300 }}"> 
-                <ChatList on:openchat={handleOpenChat} on:closechatlist={handleCloseChatList}/>
+                <ChatList user={user} on:openchat={handleOpenChat} on:closechatlist={handleCloseChatList}/>
             </div>
         {/if}
         {#if isContactsOpen}

@@ -25,30 +25,26 @@ function getUserInput(event: Event) {
 function validateUserInput(userInput: UserInput) {
     const usernameRegExp: RegExp = /^[a-zA-Z0-9][a-zA-Z0-9_]{4,}$/;
     const passwordRegExp: RegExp = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-    
-    if (!userInput.username || !userInput.password) {
-        return {
-            "isValid": false,
-            "message": "Please fill in all fields."
-        };
-    }
 
     if (!usernameRegExp.test(userInput.username)) {
         return {
             "isValid": false,
-            "message": "Username must be at least 5 characters long and can only contain letters, numbers and underscores."
+            "message": "Username must be at least 5 characters long and can only contain letters, numbers and underscores.",
+            "location": "username"
         }
     }
 
     if (!passwordRegExp.test(userInput.password)) {
         return {
             "isValid": false,
-            "message": "Password must be at least 8 characters long and contain at least one uppercase letter, one number and one special character."
+            "message": "Password must be at least 8 characters long and contain at least one uppercase letter, one number and one special character.",
+            "location": "password"
         }
     }
 
     return {
-        "isValid": true
+        "isValid": true,
+        "message": ""
     }
 }
 
