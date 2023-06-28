@@ -28,7 +28,7 @@
      * The text that the user wants to edit the message to.
      * @type {string}
      */
-    let editedText: string = message.messageText;
+    let editedText: string = '';
 
     /*
      * Indicates whether the message is in edit mode.
@@ -59,6 +59,7 @@
      * @function
      */
     function handleEditMode() {
+        editedText = message.messageText;
         isEditMode = true;
     }
 
@@ -86,14 +87,13 @@
         if (event.key === 'Enter') {
             message.messageText = editedText;
             try {
-                await editMessage(message).catch(error => {
-                    isEditMode = false;
-                });
+                await editMessage(message);
                 isEditMode = false;
                 dispatch('edited');
             }
             catch(error: any) {
                 showToast('Error while editing message.', 'error');
+                isEditMode = false;
             }
         }
     }
@@ -120,7 +120,7 @@
         display: none;
     }
 
-    div.message[data-sender="true"]:hover div.action{
+    div.message[data-sender="true"]:hover div.action {
         display: inline-block;
     }
 </style>
@@ -128,20 +128,20 @@
 {#if isToastVisible}
     <Toast message={toastMessage} type={toastType}/>
 {/if}
-<div data-sender={message.sender === user.username} class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer message">
+<div data-sender={message.sender === user.username} class={`transition duration-500 ease-in-out py-2 m-2 px-4 rounded cursor-pointer message ${message.sender === user.username ? 'bg-green-200 rounded-lg p-2 hover:bg-green-300' : 'hover:bg-blue-300 bg-blue-200 rounded-lg p-2'}`}>
+    <div class="text-gray-500">{message.sender}</div>
     {#if !isEditMode}
-        {message.sender} : {message.messageText}
+        <div>{message.messageText}</div>
     {/if}
     {#if isEditMode}
-        <input type="text" bind:value={editedText} on:keypress={editMsg}/>
+        <input type="text" bind:value={editedText} on:keypress={editMsg} class="flex-grow py-2 px-4 bg-gray-50 rounded pr-10"/>
     {/if}
     <div class="action inline-block">
-        <button class="inline-block transition duration-500 ease-in-out py-2 px-4 hover:bg-slate-300 rounded cursor-pointer" on:click={handleEditMode}>
+        <button class="inline-block transition duration-500 ease-in-out py-2 px-4 hover:bg-green-400 rounded cursor-pointer" on:click={handleEditMode}>
             <img src={editIcon} alt="Edit this message" class="w-4 h-4"/>
         </button>
-        <button class="inline-block transition duration-500 ease-in-out py-2 px-4 hover:bg-slate-300 rounded cursor-pointer" on:click={handleDelete}>
+        <button class="inline-block transition duration-500 ease-in-out py-2 px-4 hover:bg-green-400 rounded cursor-pointer" on:click={handleDelete}>
             <img src={deleteIcon} alt="Delete this message" class="w-4 h-4" />
         </button>
     </div>
 </div>
-

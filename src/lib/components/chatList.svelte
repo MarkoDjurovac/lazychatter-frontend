@@ -73,7 +73,7 @@
             pollingInterval = setInterval(async () => {
                 allChats = await getUserChats();
                 chats = [...allChats];
-            }, 1000);
+            }, 5000);
         }
         catch(error: any) {
             showToast('Error while getting chats', 'error');
@@ -156,6 +156,7 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         {#each chats as chat}
             <ChatListItem on:openchat={handleOpenChat} chat={chat} />
+            <div class="border-t border-gray-300 mx-3"></div>
         {/each}
     </div>
 </div>

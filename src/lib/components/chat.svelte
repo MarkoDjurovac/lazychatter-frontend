@@ -2,7 +2,7 @@
   import MessageBubble from '$lib/components/message.svelte';
   import Toast from '$lib/components/toast.svelte';
   import { createEventDispatcher } from 'svelte';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, afterUpdate } from 'svelte';
   import { Utils } from '$lib/utilities';
   import { sendMessage, getMessagesByChatId} from '../../services/message';
   import type { Message, Chat, User } from '../types';
@@ -88,6 +88,9 @@
       } catch (error) {
         showToast('Error while getting messages', 'error');
       }
+
+      const container: any = document.querySelector('.messages-container');
+      container.scrollTop = container.scrollHeight;
     });
 
     /*
@@ -125,7 +128,11 @@
     * @param event The event that triggered the function call.
     * @async
     */
-    async function sendNewMessage(event: Event) {
+    async function sendNewMessage() {
+      if(showPopover) {
+        return;
+      }
+
       let message: Message = {
         id: null,
         sender: user.username,
@@ -220,39 +227,50 @@
             isToastVisible = false;
         }, 3000);
     }
+
+    /*
+     * Handles the keypress event for sending a message via the enter key.
+     * @param event The event that triggered the function call.
+     */
+    function handleKeyPress(event: KeyboardEvent) {
+      if(event.key === 'Enter' && !event.shiftKey) {
+        sendNewMessage();
+      }
+    }
 </script>
-  
+
 {#if isToastVisible}
     <Toast message={toastMessage} type={toastType}/>
 {/if}
 <div class="flex flex-col h-full bg-white space-y-4 justify-between">
-    <div class="flex items-center bg-slate-200 p-1">
-      <b>Chat with {Utils.getParticipants(chat.paritcipants)}</b>
-      <button on:click={handleCloseChat} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2">
-        <img src={closeIcon} alt="Close chat" class="w-8 h-8"/>
-      </button>
-    </div>
-    <div class="overflow-y-scroll">
-      {#each messages as message}
-        <MessageBubble user={user} message={message} on:edited={handleEditedOrDeletedMessage} on:deleted={handleEditedOrDeletedMessage}/>
-      {/each}
-    </div>
-    <div class="flex items-center bg-slate-200 p-1 relative">
-      <input type="text" bind:value={messageText} class="flex-grow py-2 px-4 bg-gray-50 rounded pr-10"/> 
-      <button 
-        on:click={sendNewMessage}
-        on:mousedown={handleMousedown} 
-        on:mouseup={handleMouseup} 
-        on:mouseleave={handleMouseup}
-        class="absolute right-2 bottom-2">
-        <img src={sendIcon} alt="Send message" class="w-8">
-      </button>
-      {#if showPopover}
-        <div class="absolute bottom-10 right-0 bg-white border border-gray-300 rounded shadow-lg p-2">
-          <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click|preventDefault={() => handleAiChat("GPT")}>I'm lazy</button>
-          <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click|preventDefault={() => handleAiChat("INSULT")}>I'm angry</button>
-          <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click|preventDefault={() => handleAiChat("COMPLIMENT")}>I'm nice</button>
-        </div>
-      {/if}
+  <div class="flex items-center bg-slate-200 p-1 justify-between">
+    <b class="ml-4">Chat with {Utils.getParticipants(chat.paritcipants)}</b>
+    <div class="flex-grow"></div>
+    <button on:click={handleCloseChat} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2">
+      <img src={closeIcon} alt="Close chat" class="w-8 h-8"/>
+    </button>
+  </div>
+  <div class="messages-container overflow-y-scroll flex-grow flex flex-col">
+    {#each messages as message}
+      <MessageBubble user={user} message={message} on:edited={handleEditedOrDeletedMessage} on:deleted={handleEditedOrDeletedMessage}/>
+    {/each}
+  </div>
+  <div class="flex items-center bg-slate-200 p-1 relative">
+    <input type="text" bind:value={messageText} class="flex-grow py-2 px-4 bg-gray-50 rounded pr-10" on:keypress={handleKeyPress}/> 
+    <button 
+      on:click={sendNewMessage}
+      on:mousedown={handleMousedown} 
+      on:mouseup={handleMouseup} 
+      on:mouseleave={handleMouseup}
+      class="absolute right-2 bottom-2">
+      <img src={sendIcon} alt="Send message" class="w-8">
+    </button>
+    {#if showPopover}
+      <div class="absolute bottom-10 right-0 bg-white border border-gray-300 rounded shadow-lg p-2">
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click|preventDefault={() => handleAiChat("GPT")}>I'm lazy</button>
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click|preventDefault={() => handleAiChat("INSULT")}>I'm angry</button>
+        <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click|preventDefault={() => handleAiChat("COMPLIMENT")}>I'm nice</button>
+      </div>
+    {/if}
   </div>
 </div>

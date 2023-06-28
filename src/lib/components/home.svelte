@@ -156,7 +156,7 @@
             </div>
         {/if}
         {#if isContactsOpen}
-            <div class="flex" transition:fly="{{ x: -10000, duration: 300 }}">
+            <div class="flex-1" transition:fly="{{ x: -10000, duration: 300 }}">
                 <Users on:closecontacts={handleCloseContacts}/>
             </div>
         {/if}

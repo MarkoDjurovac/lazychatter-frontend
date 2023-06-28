@@ -114,10 +114,10 @@
 {/if}
 <div class="fixed inset-0 flex items-center justify-center z-10">
     <div class="bg-black opacity-50 fixed inset-0" style="backdrop-filter: blur(5px);"></div>
-    <dialog open class="border rounded-md relative bg-white">
+    <dialog open class="border rounded-md relative bg-white p-0">
         <div class="flex items-center bg-slate-200">
-            Chat with User
-            <button on:click={handleCloseDialog} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2">
+            <b class="pl-3">Chat with User</b>
+            <button on:click={handleCloseDialog} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-9">
               <img src={closeIcon} alt="Close chat" class="w-8 h-8"/>
             </button>
         </div>
@@ -125,13 +125,16 @@
             {#each allUsers as user}
                 <div class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer">
                     <input type="checkbox" value={user.username} on:change={handleSelectParticipant}/>
-                    <img src={defaultUserIcon} alt="User icon" class="w-8 h-8 inline-block mr-2"/>
+                    <img src={defaultUserIcon} alt="User icon" class="w-8 h-8 inline-block ml-2 mr-1"/>
                     {user.username}
                 </div>
+                <div class="border-t border-gray-300 mx-3"></div>
             {/each}
-            <button on:click={handleStartChat} class="hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2">
-                Start new chat
-            </button>
+            <div class="flex items-center justify-center">
+                <button on:click={handleStartChat} class="bg-slate-100 hover:bg-slate-200 text-black font-bold py-2 px-4 rounded transition duration-500 ease-in-out ml-2 mt-4">
+                    Start new chat
+                </button>
+            </div>
         </div>
     </dialog>    
 </div>

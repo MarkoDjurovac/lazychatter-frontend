@@ -66,7 +66,6 @@
 
             pollingInterval = setInterval(async () => {
                 allUsers = await getUserList();
-                users = [...allUsers];
             }, 1000);
         }catch(error: any) {
             showToast('Error while fetching users.', 'error');
@@ -117,12 +116,13 @@
             <img src={closeIcon} alt="Close contacts" class="w-8 h-8"/>
         </button>
     </div>
-    <div class="overflow-y-auto space-y-4 flex-grow">
+    <div class="overflow-y-auto space-y-4 flex-grow overflow-y-scroll">
         {#each users as user}
-            <div class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer">
+            <div class="transition duration-500 ease-in-out hover:bg-slate-200 py-2 px-4 rounded cursor-pointer m-2">
                 <img src={defaultUserIcon} alt="User icon" class="w-8 h-8 inline-block mr-2"/>
                 {user.username}
             </div>
+            <div class="border-t border-gray-300 mx-3"></div>
         {/each}
     </div>
 </div>
