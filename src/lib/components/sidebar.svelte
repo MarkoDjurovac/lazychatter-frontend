@@ -83,7 +83,7 @@
         {#if isSettingsOpen}
             <div class="absolute right-0 top-0 transform translate-y-[-100%] bg-white rounded shadow-lg">
                 <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click={handleLogout}>Logout</button>
-                <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click={handleToggleTheme}>Toggle Dark/Light Mode</button>
+                <button class="block w-full text-left px-4 py-2 hover:bg-gray-200" on:click={handleToggleTheme} disabled>Theme</button>
             </div>
         {/if}
     </div>

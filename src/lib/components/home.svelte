@@ -119,7 +119,7 @@
      * @function
      */
     function handleToggleTheme() {
-        // TODO: toggle theme
+        document.documentElement.classList.toggle('dark');
     }
 
     /*
